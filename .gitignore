@@ -1,0 +1,23 @@
+
+# Dependencias
+node_modules/
+frontend/node_modules/
+
+# Entornos virtuales de Python
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+
+# Variables y secretos
+.env
+.env.*
+!.env.example
+
+# Archivos generados
+dist/
+frontend/dist/
+build/
+
+# Configuración local
+.vscode/
