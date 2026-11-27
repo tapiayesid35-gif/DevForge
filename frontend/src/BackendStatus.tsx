@@ -6,22 +6,14 @@ function BackendStatus() {
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/health')
+    fetch('http://localhost:8000/health')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Error de conexión')
         }
 
-        return response.json()
-      })
-      .then((data) => {
-        if (data.status === 'healthy') {
-          setStatus('Conectado')
-          setIsConnected(true)
-        } else {
-          setStatus('Sin conexión')
-          setIsConnected(false)
-        }
+        setStatus('Conectado')
+        setIsConnected(true)
       })
       .catch(() => {
         setStatus('Sin conexión')

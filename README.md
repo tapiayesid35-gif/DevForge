@@ -4,141 +4,140 @@
 
 *Practica. Analiza. Mejora. Demuestra.*
 
-## 1. Descripción del proyecto
+## Estado de esta entrega
 
-DevForge es una plataforma orientada al aprendizaje y evaluación de habilidades de programación. Integra retos de código y herramientas de análisis estático para ayudar a los usuarios a identificar oportunidades de mejora en sus programas.
+Esta carpeta reúne una versión integrada del prototipo. Incluye autenticación Supabase, catálogo de retos, editor CodeMirror, evaluación de retos Python mediante Docker, análisis estático CodeGuardian e historial básico. El Dashboard consulta datos del usuario, y AI Coach presenta recomendaciones basadas en reglas y en actividad registrada.
 
-## 2. Módulos principales
+No se debe describir esta versión como un producto de producción ni como una plataforma con IA generativa. Los módulos XP/IEP dependen de datos que deben generarse desde un proceso confiable; el panel docente muestra cursos existentes y depende de la asignación correcta de roles y políticas RLS.
 
-### CodeArena
-- Catálogo de retos de programación.
-- Clasificación por dificultad y categoría.
-- Editor de código con soporte para varios lenguajes.
+## Funcionalidades disponibles
 
-### CodeGuardian
-- Análisis estático de código.
-- Identificación de tareas pendientes.
-- Detección de instrucciones de depuración.
-- Identificación de posibles implementaciones incompletas.
-- Recomendaciones para mejorar el código.
+- Registro e inicio de sesión con Supabase Auth.
+- Perfil básico y rol consultados desde `public.profiles`.
+- Retos publicados consultados desde `public.challenges`.
+- Editor de Python, JavaScript, Java y C++.
+- Evaluación automática de Python para los tres retos de demostración mediante Docker.
+- Persistencia de intentos en `public.attempts`.
+- Análisis estático mediante reglas en FastAPI.
+- Persistencia de análisis en `public.code_analyses`.
+- Dashboard con intentos, promedio, análisis, XP registrado e IEP si existe una instantánea.
+- Recomendaciones de estudio basadas en reglas (no IA generativa).
+- Panel docente de lectura de cursos para perfiles `teacher` o `admin`.
 
-### AI Coach
-Módulo contemplado para ofrecer recomendaciones personalizadas de aprendizaje.
+## Requisitos
 
-### Mi perfil
-Módulo contemplado para mostrar el progreso y las habilidades del usuario.
+- Windows 10/11, macOS o Linux.
+- Node.js 20 o superior y npm.
+- Python 3.10 o superior.
+- Docker Desktop instalado y en ejecución para evaluar código Python.
+- Proyecto Supabase con el esquema DevForge y sus políticas RLS configuradas.
 
-## 3. Tecnologías utilizadas
+## Configuración de Supabase
 
-**Frontend**
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- CodeMirror
+1. En `frontend`, copia `.env.example` como `.env`.
+2. Completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` con la URL del proyecto y la clave pública publishable/anon.
+3. Nunca uses una clave `service_role` en el frontend ni la subas al repositorio.
+4. Comprueba que existan las tablas `profiles`, `challenges`, `attempts`, `code_analyses`, `xp_transactions`, `iep_snapshots` y `courses`, con RLS y políticas apropiadas.
+5. Los perfiles docentes deben recibir su rol desde un proceso administrativo confiable; no permitas que el usuario se asigne ese rol desde el navegador.
 
-**Backend**
-- Python
-- FastAPI
-- Uvicorn
-- Pydantic
+## Ejecución local en Windows
 
-## 4. Arquitectura
+Abre dos terminales.
 
-DevForge utiliza una arquitectura cliente-servidor:
-
-- El frontend presenta la interfaz y gestiona la interacción.
-- El backend proporciona servicios mediante una API REST.
-- FastAPI procesa las solicitudes y devuelve respuestas en formato JSON.
-
-## 5. Estructura del proyecto
-
-```text
-DevForge/
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── CodeArena.tsx
-│   │   ├── CodeGuardian.tsx
-│   │   └── BackendStatus.tsx
-│   └── package.json
-│
-├── backend/
-│   ├── main.py
-│   └── venv/
-│
-└── README.md
-```
-
-## 6. Instalación y ejecución
-
-### Backend
-
-Desde la carpeta `backend`, activar el entorno virtual:
+### Terminal 1: backend
 
 ```powershell
-.\venv\Scripts\Activate.ps1
+cd DevForge\backend
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+py -m pip install -r requirements.txt
+py -m uvicorn main:app --reload
 ```
 
-Instalar dependencias si es necesario:
+El backend queda en `http://127.0.0.1:8000`. Documentación: `http://127.0.0.1:8000/docs`.
+
+Docker Desktop debe estar abierto. Verifica la conexión:
 
 ```powershell
-python -m pip install fastapi "uvicorn[standard]"
+docker run hello-world
 ```
 
-Iniciar el servidor:
+El evaluador descarga `python:3.12-alpine` si no está disponible localmente.
+
+### Terminal 2: frontend
 
 ```powershell
-python -m uvicorn main:app --reload
-```
-
-El backend estará disponible en:
-
-`http://127.0.0.1:8000`
-
-Documentación interactiva:
-
-`http://127.0.0.1:8000/docs`
-
-### Frontend
-
-Desde la carpeta `frontend`:
-
-```powershell
+cd DevForge\frontend
+Copy-Item .env.example .env
+# Edita .env y agrega las credenciales públicas de Supabase
 npm install
 npm run dev
 ```
 
-La aplicación estará disponible en:
+Abre la URL que Vite muestre en la terminal, normalmente `http://localhost:5173`.
 
-`http://localhost:5173`
+## Retos incluidos
 
-## 7. Endpoints disponibles
+| ID | Reto | Entrada esperada | Salida esperada |
+|---:|---|---|---|
+| 1 | Suma de dos números | Dos enteros separados por espacio | La suma |
+| 2 | Palíndromo | Una palabra | `True` o `False` |
+| 3 | Encontrar número mayor | Tres enteros separados por espacio | El mayor |
 
-| Método | Endpoint | Función |
+El motor de evaluación actual solo ejecuta Python. Los otros lenguajes se muestran en el editor, pero todavía no cuentan con motores de ejecución conectados.
+
+## API
+
+| Método | Ruta | Propósito |
 |---|---|---|
-| GET | `/` | Verificar la API |
-| GET | `/health` | Comprobar el estado del backend |
-| GET | `/api/challenges` | Consultar retos |
-| POST | `/api/codeguardian/analyze` | Analizar código |
+| GET | `/` | Estado general |
+| GET | `/health` | Salud del servicio |
+| GET | `/api/challenges` | Retos de demostración |
+| POST | `/api/codearena/run` | Ejecutar Python |
+| POST | `/api/codearena/evaluate` | Evaluar un reto Python |
+| POST | `/api/codeguardian/analyze` | Análisis estático |
 
-## 8. Estado actual
+## Pruebas básicas de aceptación
 
-- [x] Interfaz principal y navegación.
-- [x] Integración frontend-backend.
-- [x] Catálogo de retos conectado a FastAPI.
-- [x] Editor de código.
-- [x] Análisis estático mediante CodeGuardian.
-- [x] Visualización de hallazgos y recomendaciones.
-- [ ] Ejecución real y aislada de código.
-- [ ] AI Coach personalizado.
-- [ ] Perfil de habilidades persistente.
-- [ ] Base de datos y autenticación.
+1. Registrar una cuenta y confirmar el correo si Supabase lo solicita.
+2. Iniciar sesión.
+3. Verificar que el indicador de backend diga `Conectado`.
+4. Abrir CodeArena y cargar el reto de suma.
+5. En Python, ejecutar:
 
-## 9. Consideraciones
+```python
+a, b = map(int, input().split())
+print(a + b)
+```
 
-La versión actual es un prototipo funcional. El análisis de CodeGuardian utiliza reglas estáticas básicas y no representa una auditoría completa de seguridad o calidad. La ejecución de código y los módulos pendientes requieren desarrollo adicional.
+6. En Swagger, comprobar `POST /api/codearena/evaluate` con `challenge_id: 1`.
+7. Abrir CodeGuardian, analizar código con `TODO` o `pass` y comprobar que aparezcan hallazgos.
+8. Confirmar que los intentos y análisis se guarden en Supabase.
+9. Revisar que el Dashboard refleje los registros.
 
-## 10. Objetivo
+## Limitaciones conocidas y seguridad
 
-Construir una plataforma que integre práctica de programación, análisis técnico y seguimiento del aprendizaje en un mismo entorno.
+- **Evaluación Docker:** la ejecución de código arbitrario sigue siendo un riesgo incluso dentro de un contenedor. La configuración actual sirve para demostración local controlada, no para exponer públicamente a usuarios. Antes de un despliegue real se requiere aislamiento reforzado (por ejemplo, workers en VM/gVisor/Firecracker), límites de salida, autenticación y autorización del backend, rate limiting, monitorización y pruebas de seguridad.
+- **Puntuación:** el prototipo registra la puntuación enviada desde el frontend a Supabase. Un usuario técnicamente avanzado podría manipular esa petición. Para métricas institucionales reales, el backend debe validar el JWT de Supabase y escribir el resultado desde un entorno servidor confiable.
+- **CodeGuardian:** aplica heurísticas estáticas simples; no es una IA ni una auditoría de seguridad completa.
+- **AI Coach:** produce recomendaciones determinísticas a partir de los resultados disponibles; no usa un modelo de IA.
+- **XP e IEP:** el Dashboard solo lee transacciones XP e instantáneas IEP existentes. No concede XP ni genera automáticamente el IEP.
+- **Panel docente:** depende de que el perfil tenga rol `teacher` o `admin` y de las políticas RLS de cursos.
+- **Lenguajes:** solo Python está conectado al evaluador automático.
+
+## Estructura
+
+```text
+DevForge/
+├── backend/
+│   ├── main.py
+│   ├── code_runner.py
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── .env.example
+└── README.md
+```

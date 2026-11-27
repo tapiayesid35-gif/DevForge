@@ -1,30 +1,50 @@
 
-from fastapi import FastAPI
+import os
+
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from code_runner import run_python_code, evaluate_challenge
+
 
 app = FastAPI(
     title="DevForge API",
     description="Backend de la plataforma DevForge",
-    version="1.0.0"
+    version="1.2.0"
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        origin.strip()
+        for origin in os.getenv(
+            "DEVFORGE_CORS_ORIGINS",
+            "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174"
+        ).split(",")
+        if origin.strip()
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-# Modelo de datos para CodeGuardian
 class CodeAnalysisRequest(BaseModel):
     code: str
     language: str = "python"
 
 
-# Página principal
+class CodeExecutionRequest(BaseModel):
+    source_code: str = Field(min_length=1, max_length=20000)
+    language: str = "python"
+
+
+class ChallengeEvaluationRequest(BaseModel):
+    challenge_id: int
+    source_code: str = Field(min_length=1, max_length=20000)
+
+
 @app.get("/")
 def home():
     return {
@@ -33,15 +53,11 @@ def home():
     }
 
 
-# Estado del servidor
 @app.get("/health")
 def health_check():
-    return {
-        "status": "healthy"
-    }
+    return {"status": "healthy"}
 
 
-# Obtener retos de CodeArena
 @app.get("/api/challenges")
 def get_challenges():
     challenges = [
@@ -50,21 +66,21 @@ def get_challenges():
             "title": "Suma de dos números",
             "difficulty": "Fácil",
             "category": "Fundamentos",
-            "description": "Crea una función que reciba dos números y devuelva su suma."
+            "description": "Crea un programa que lea dos números y muestre su suma."
         },
         {
             "id": 2,
             "title": "Palíndromo",
             "difficulty": "Intermedio",
             "category": "Cadenas",
-            "description": "Comprueba si una palabra se lee igual de izquierda a derecha que de derecha a izquierda."
+            "description": "Lee una palabra y muestra True si es palíndromo o False si no lo es."
         },
         {
             "id": 3,
             "title": "Encontrar número mayor",
             "difficulty": "Fácil",
             "category": "Listas",
-            "description": "Encuentra el número más grande dentro de una lista."
+            "description": "Lee tres números y muestra el número mayor."
         }
     ]
 
@@ -74,7 +90,38 @@ def get_challenges():
     }
 
 
-# Analizador estático de CodeGuardian
+@app.post("/api/codearena/run")
+def execute_code(request: CodeExecutionRequest):
+
+    if request.language.lower() != "python":
+        raise HTTPException(
+            status_code=400,
+            detail="Por ahora, CodeArena solo permite ejecutar Python."
+        )
+
+    result = run_python_code(request.source_code)
+    if result.get("error", "").startswith("Error de Docker:"):
+        raise HTTPException(status_code=503, detail=result["error"])
+    return result
+
+
+@app.post("/api/codearena/evaluate")
+def evaluate_code(request: ChallengeEvaluationRequest):
+
+    result = evaluate_challenge(
+        request.challenge_id,
+        request.source_code
+    )
+
+    if result["total_tests"] == 0:
+        raise HTTPException(
+            status_code=404,
+            detail=result["message"]
+        )
+
+    return result
+
+
 @app.post("/api/codeguardian/analyze")
 def analyze_code(request: CodeAnalysisRequest):
 
