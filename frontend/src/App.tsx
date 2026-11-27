@@ -30,7 +30,7 @@ function App() {
 
       if (mounted) {
         if (error) {
-          setError('No se pudo comprobar la sesión.')
+          setError('No se pudo comprobar la sesiÃ³n.')
         } else {
           setSession(data.session)
         }
@@ -69,7 +69,7 @@ function App() {
         }
 
         if (password.length < 6) {
-          setError('La contraseña debe tener al menos 6 caracteres.')
+          setError('La contraseÃ±a debe tener al menos 6 caracteres.')
           return
         }
 
@@ -86,10 +86,10 @@ function App() {
         if (error) throw error
 
         if (data.session) {
-          setMessage('¡Cuenta creada correctamente!')
+          setMessage('Â¡Cuenta creada correctamente!')
         } else {
           setMessage(
-            'Cuenta creada. Revisa tu correo para confirmar el registro antes de iniciar sesión.'
+            'Cuenta creada. Revisa tu correo para confirmar el registro antes de iniciar sesiÃ³n.'
           )
         }
       } else {
@@ -100,13 +100,13 @@ function App() {
 
         if (error) throw error
 
-        setMessage('Inicio de sesión exitoso.')
+        setMessage('Inicio de sesiÃ³n exitoso.')
       }
     } catch (err) {
       const message =
         err instanceof Error
           ? err.message
-          : 'Ocurrió un error durante la autenticación.'
+          : 'OcurriÃ³ un error durante la autenticaciÃ³n.'
 
       setError(message)
     } finally {
@@ -118,7 +118,7 @@ function App() {
     const { error } = await supabase.auth.signOut()
 
     if (error) {
-      setError('No se pudo cerrar la sesión.')
+      setError('No se pudo cerrar la sesiÃ³n.')
       return
     }
 
@@ -127,17 +127,11 @@ function App() {
     setError('')
   }
 
-  const menuButton = (page: string) =>
-    `block w-full text-left p-3 rounded-lg ${
-      activePage === page
-        ? 'bg-violet-600 text-white'
-        : 'text-gray-400 hover:bg-gray-800'
-    }`
 
   if (checkingSession) {
     return (
       <div className="min-h-screen bg-[#0b1020] text-white flex items-center justify-center">
-        <p className="text-violet-400">Comprobando sesión de DevForge...</p>
+        <p className="text-violet-400">Comprobando sesiÃ³n de DevForge...</p>
       </div>
     )
   }
@@ -169,7 +163,7 @@ function App() {
                   : 'text-gray-400'
               }`}
             >
-              Iniciar sesión
+              Iniciar sesiÃ³n
             </button>
 
             <button
@@ -198,7 +192,7 @@ function App() {
           <p className="text-gray-400 text-sm mb-6">
             {authMode === 'login'
               ? 'Ingresa a tu espacio de aprendizaje.'
-              : 'Únete a la comunidad DevForge.'}
+              : 'Ãšnete a la comunidad DevForge.'}
           </p>
 
           <form onSubmit={handleAuth} className="space-y-4">
@@ -221,7 +215,7 @@ function App() {
 
             <div>
               <label className="block text-sm text-gray-300 mb-2">
-                Correo electrónico
+                Correo electrÃ³nico
               </label>
               <input
                 type="email"
@@ -236,13 +230,13 @@ function App() {
 
             <div>
               <label className="block text-sm text-gray-300 mb-2">
-                Contraseña
+                ContraseÃ±a
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder="MÃ­nimo 6 caracteres"
                 required
                 minLength={6}
                 autoComplete={
@@ -280,7 +274,7 @@ function App() {
           </form>
 
           <p className="text-center text-gray-500 text-xs mt-6">
-            Plataforma inteligente para el desarrollo y evaluación de habilidades de software.
+            Plataforma inteligente para el desarrollo y evaluaciÃ³n de habilidades de software.
           </p>
         </div>
       </div>
@@ -405,7 +399,7 @@ function AuthenticatedApp({
 
       if (attemptResult.error) {
         setDataError(
-          'No se pudieron consultar las estadísticas. Verifica las políticas RLS de attempts.'
+          'No se pudieron consultar las estadÃ­sticas. Verifica las polÃ­ticas RLS de attempts.'
         )
       } else {
         setAttempts((attemptResult.data ?? []) as AttemptRow[])
@@ -511,7 +505,7 @@ function AuthenticatedApp({
               onClick={onLogout}
               className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm"
             >
-              Cerrar sesión
+              Cerrar sesiÃ³n
             </button>
           </div>
         </header>
@@ -533,7 +527,7 @@ function AuthenticatedApp({
               <p className="text-violet-300 text-sm">Bienvenido a DevForge</p>
               <h3 className="text-2xl font-bold mt-2">{profile?.full_name || userName}</h3>
               <p className="text-gray-300 mt-2">
-                Tu progreso se construye con práctica, análisis y evidencia de aprendizaje.
+                Tu progreso se construye con prÃ¡ctica, anÃ¡lisis y evidencia de aprendizaje.
               </p>
             </section>
 
@@ -546,44 +540,44 @@ function AuthenticatedApp({
             <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               <MetricCard
                 label="Intentos evaluados"
-                value={loadingStats ? '…' : evaluatedAttempts.length}
+                value={loadingStats ? 'â€¦' : evaluatedAttempts.length}
                 note="Pruebas ejecutadas"
               />
               <MetricCard
                 label="Retos aprobados"
-                value={loadingStats ? '…' : completedAttempts.length}
-                note="Puntuación igual o superior a 70"
+                value={loadingStats ? 'â€¦' : completedAttempts.length}
+                note="PuntuaciÃ³n igual o superior a 70"
               />
               <MetricCard
                 label="Promedio"
-                value={loadingStats ? '…' : `${averageScore}/100`}
+                value={loadingStats ? 'â€¦' : `${averageScore}/100`}
                 note="Sobre intentos evaluados"
               />
               <MetricCard
                 label="Experiencia"
-                value={loadingStats ? '…' : `${xp} XP`}
+                value={loadingStats ? 'â€¦' : `${xp} XP`}
                 note="Transacciones registradas"
               />
             </section>
 
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <div className="bg-[#151e33] border border-gray-800 p-6 rounded-xl">
-                <h3 className="text-xl font-bold mb-2">Índice de Evolución del Programador</h3>
+                <h3 className="text-xl font-bold mb-2">Ãndice de EvoluciÃ³n del Programador</h3>
                 {iep ? (
                   <>
                     <p className="text-4xl font-bold text-violet-300">
                       {Math.round(iep.overall_score ?? 0)}/100
                     </p>
                     <div className="grid grid-cols-2 gap-3 mt-5 text-sm">
-                      <IepMetric label="Resolución de problemas" value={iep.problem_solving} />
-                      <IepMetric label="Calidad del código" value={iep.code_quality} />
+                      <IepMetric label="ResoluciÃ³n de problemas" value={iep.problem_solving} />
+                      <IepMetric label="Calidad del cÃ³digo" value={iep.code_quality} />
                       <IepMetric label="Mejora" value={iep.improvement} />
-                      <IepMetric label="Autonomía" value={iep.autonomy} />
+                      <IepMetric label="AutonomÃ­a" value={iep.autonomy} />
                     </div>
                   </>
                 ) : (
                   <p className="text-gray-400">
-                    Aún no hay una medición IEP registrada. Se mostrará cuando el sistema genere una instantánea basada en evidencias.
+                    AÃºn no hay una mediciÃ³n IEP registrada. Se mostrarÃ¡ cuando el sistema genere una instantÃ¡nea basada en evidencias.
                   </p>
                 )}
               </div>
@@ -591,21 +585,21 @@ function AuthenticatedApp({
               <div className="bg-[#151e33] border border-gray-800 p-6 rounded-xl">
                 <h3 className="text-xl font-bold mb-2">Actividad reciente</h3>
                 {loadingStats ? (
-                  <p className="text-gray-400">Consultando tu actividad…</p>
+                  <p className="text-gray-400">Consultando tu actividadâ€¦</p>
                 ) : attempts.length === 0 && analyses.length === 0 ? (
                   <p className="text-gray-400">
-                    Todavía no tienes actividad. Comienza resolviendo un reto o analizando código.
+                    TodavÃ­a no tienes actividad. Comienza resolviendo un reto o analizando cÃ³digo.
                   </p>
                 ) : (
                   <div className="space-y-3">
                     {attempts.slice(0, 4).map(item => (
                       <div key={item.id} className="flex justify-between gap-3 border-b border-gray-800 pb-2 text-sm">
-                        <span>Reto #{item.challenge_id} · {item.status}</span>
+                        <span>Reto #{item.challenge_id} Â· {item.status}</span>
                         <span className="text-violet-300">{item.score ?? 'Sin nota'}</span>
                       </div>
                     ))}
                     <p className="text-gray-400 text-sm">
-                      Análisis CodeGuardian guardados: {analyses.length}
+                      AnÃ¡lisis CodeGuardian guardados: {analyses.length}
                     </p>
                   </div>
                 )}
@@ -615,14 +609,14 @@ function AuthenticatedApp({
             <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <ActionCard
                 title="CodeArena"
-                description="Resuelve desafíos y comprueba tus soluciones con casos de prueba."
+                description="Resuelve desafÃ­os y comprueba tus soluciones con casos de prueba."
                 button="Explorar retos"
                 onClick={() => setActivePage('CodeArena')}
               />
               <ActionCard
                 title="CodeGuardian"
-                description="Identifica tareas pendientes y oportunidades de mejora en tu código."
-                button="Analizar código"
+                description="Identifica tareas pendientes y oportunidades de mejora en tu cÃ³digo."
+                button="Analizar cÃ³digo"
                 onClick={() => setActivePage('CodeGuardian')}
               />
             </section>
@@ -723,22 +717,22 @@ function CoachPage({
   const recommendations: string[] = []
 
   if (evaluated.length === 0) {
-    recommendations.push('Completa tu primer reto para obtener una recomendación basada en resultados.')
+    recommendations.push('Completa tu primer reto para obtener una recomendaciÃ³n basada en resultados.')
   } else {
     if ((average ?? 0) < 70) {
-      recommendations.push('Refuerza la lógica básica y practica con entradas pequeñas antes de resolver casos más complejos.')
+      recommendations.push('Refuerza la lÃ³gica bÃ¡sica y practica con entradas pequeÃ±as antes de resolver casos mÃ¡s complejos.')
     } else {
-      recommendations.push('Mantén la práctica y aumenta gradualmente la dificultad de los desafíos.')
+      recommendations.push('MantÃ©n la prÃ¡ctica y aumenta gradualmente la dificultad de los desafÃ­os.')
     }
     if ((latest?.score ?? 100) < 100) {
-      recommendations.push('Revisa los casos de prueba que no superaste y prueba valores límite y entradas negativas.')
+      recommendations.push('Revisa los casos de prueba que no superaste y prueba valores lÃ­mite y entradas negativas.')
     } else {
-      recommendations.push('Tu último intento obtuvo la puntuación máxima. Intenta resolver el siguiente reto con una solución clara y eficiente.')
+      recommendations.push('Tu Ãºltimo intento obtuvo la puntuaciÃ³n mÃ¡xima. Intenta resolver el siguiente reto con una soluciÃ³n clara y eficiente.')
     }
   }
 
   if (analyses.some(item => item.total_findings > 0)) {
-    recommendations.push('CodeGuardian detectó hallazgos en análisis anteriores. Revisa las recomendaciones y vuelve a analizar el código corregido.')
+    recommendations.push('CodeGuardian detectÃ³ hallazgos en anÃ¡lisis anteriores. Revisa las recomendaciones y vuelve a analizar el cÃ³digo corregido.')
   }
 
   return (
@@ -746,12 +740,12 @@ function CoachPage({
       <div className="bg-[#151e33] border border-gray-800 rounded-xl p-6">
         <h3 className="text-xl font-bold">Coach de aprendizaje</h3>
         <p className="text-gray-400 mt-2">
-          Recomendaciones adaptativas basadas en tus intentos y análisis guardados. Este módulo utiliza reglas de recomendación, no un modelo generativo de IA.
+          Recomendaciones adaptativas basadas en tus intentos y anÃ¡lisis guardados. Este mÃ³dulo utiliza reglas de recomendaciÃ³n, no un modelo generativo de IA.
         </p>
       </div>
       {recommendations.map((item, index) => (
         <div key={index} className="bg-[#151e33] border border-violet-900 rounded-xl p-5">
-          <p className="text-violet-300 text-sm">Recomendación {index + 1}</p>
+          <p className="text-violet-300 text-sm">RecomendaciÃ³n {index + 1}</p>
           <p className="mt-2">{item}</p>
         </div>
       ))}
@@ -786,8 +780,8 @@ function ProfilePage({
           <ProfileField label="Rol" value={role} />
           <ProfileField label="XP registrados" value={`${xp}`} />
           <ProfileField label="Intentos registrados" value={`${attempts.length}`} />
-          <ProfileField label="Análisis guardados" value={`${analyses.length}`} />
-          <ProfileField label="Promedio de evaluación" value={`${averageScore}/100`} />
+          <ProfileField label="AnÃ¡lisis guardados" value={`${analyses.length}`} />
+          <ProfileField label="Promedio de evaluaciÃ³n" value={`${averageScore}/100`} />
         </div>
       </div>
     </section>
@@ -824,7 +818,7 @@ function TeacherPage({ role, userId }: { role: string; userId: string }) {
 
       if (!active) return
       if (error) {
-        setError('No se pudieron cargar los cursos. Comprueba las políticas de acceso de courses.')
+        setError('No se pudieron cargar los cursos. Comprueba las polÃ­ticas de acceso de courses.')
       } else {
         setCourses((data ?? []) as Array<{ id: number }>)
       }
@@ -840,7 +834,7 @@ function TeacherPage({ role, userId }: { role: string; userId: string }) {
       <div className="bg-[#151e33] border border-gray-800 rounded-xl p-6">
         <h3 className="text-xl font-bold">Panel docente</h3>
         <p className="text-gray-400 mt-2">
-          Esta cuenta tiene rol de estudiante. El panel docente solo está disponible para perfiles autorizados por la institución.
+          Esta cuenta tiene rol de estudiante. El panel docente solo estÃ¡ disponible para perfiles autorizados por la instituciÃ³n.
         </p>
       </div>
     )
@@ -854,7 +848,7 @@ function TeacherPage({ role, userId }: { role: string; userId: string }) {
           Vista inicial de los cursos asociados a tu perfil docente.
         </p>
       </div>
-      {loading && <p className="text-gray-400">Cargando cursos…</p>}
+      {loading && <p className="text-gray-400">Cargando cursosâ€¦</p>}
       {error && <p className="text-red-300">{error}</p>}
       {!loading && !error && courses.length === 0 && (
         <p className="text-gray-400">No hay cursos asociados a esta cuenta.</p>
